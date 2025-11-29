@@ -47,30 +47,30 @@ export default function Home() {
   // REPLACE THIS WITH YOUR AWS URL
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const RACES: Record<string, {flag: string; name: string}> = {
-    "melbourne": { flag: "🇦🇺", name: "Melbourne" },
-    "shanghai": { flag: "🇨🇳", name: "Shanghai" },
-    "suzuka": { flag: "🇯🇵", name: "Suzuka" },
-    "jeddah": { flag: "🇸🇦", name: "Jeddah" },
-    "miami": { flag: "🇺🇸", name: "Miami" },
-    "montreal": { flag: "🇨🇦", name: "Montreal" },
-    "monaco": { flag: "🇲🇨", name: "Monaco" },
-    "barcelona": { flag: "🇪🇸", name: "Barcelona" },
-    "spielberg": { flag: "🇦🇹", name: "Spielberg" },
-    "silverstone": { flag: "🇬🇧", name: "Silverstone" },
-    "spa": { flag: "🇧🇪", name: "Spa-Francorchamps" },
-    "hungaroring": { flag: "🇭🇺", name: "Hungaroring" },
-    "zandvoort": { flag: "🇳🇱", name: "Zandvoort" },
-    "monza": { flag: "🇮🇹", name: "Monza" },
-    "madrid": { flag: "🇪🇸", name: "Madrid" },
-    "baku": { flag: "🇦🇿", name: "Baku" },
-    "singapore": { flag: "🇸🇬", name: "Singapore" },
-    "austin": { flag: "🇺🇸", name: "Austin" },
-    "mexico_city": { flag: "🇲🇽", name: "Mexico City" },
-    "brazil": { flag: "🇧🇷", name: "São Paulo" },
-    "las_vegas": { flag: "🇺🇸", name: "Las Vegas"},
-    "qatar": { flag: "🇶🇦", name: "Lusail"},
-    "abu_dhabi": { flag: "🇦🇪", name: "Abu Dhabi"},
+  const RACES: Record<string, {iso: string; name: string}> = {
+    "melbourne": { iso: "au", name: "Melbourne" },
+    "shanghai": { iso: "cn", name: "Shanghai" },
+    "suzuka": { iso: "jp", name: "Suzuka" },
+    "jeddah": { iso: "sa", name: "Jeddah" },
+    "miami": { iso: "us", name: "Miami" },
+    "montreal": { iso: "ca", name: "Montreal" },
+    "monaco": { iso: "mc", name: "Monaco" },
+    "barcelona": { iso: "es", name: "Barcelona" },
+    "spielberg": { iso: "at", name: "Spielberg" },
+    "silverstone": { iso: "gb", name: "Silverstone" },
+    "spa": { iso: "be", name: "Spa-Francorchamps" },
+    "hungaroring": { iso: "hu", name: "Hungaroring" },
+    "zandvoort": { iso: "nl", name: "Zandvoort" },
+    "monza": { iso: "it", name: "Monza" },
+    "madrid": { iso: "es", name: "Madrid" },
+    "baku": { iso: "az", name: "Baku" },
+    "singapore": { iso: "sg", name: "Singapore" },
+    "austin": { iso: "us", name: "Austin" },
+    "mexico_city": { iso: "mx", name: "Mexico City" },
+    "brazil": { iso: "br", name: "São Paulo" },
+    "las_vegas": { iso: "us", name: "Las Vegas"},
+    "qatar": { iso: "qa", name: "Lusail"},
+    "abu_dhabi": { iso: "ae", name: "Abu Dhabi"},
   };
 
   // --- API HANDLER ---
@@ -131,7 +131,7 @@ export default function Home() {
                 >
                   {Object.entries(RACES).map(([id, info]) => (
                     <option key={id} value={id}>
-                      {info.flag} {info.name}
+                    {info.name}
                     </option>
                   ))}
                 </select>
@@ -150,7 +150,7 @@ export default function Home() {
                 >
                   {Object.entries(RACES).map(([id, info]) => (
                     <option key={id} value={id}>
-                      {info.flag} {info.name}
+                    {info.name}
                     </option>
                   ))}
                 </select>
@@ -189,13 +189,32 @@ export default function Home() {
               <div className="bg-slate-800 p-4 rounded-lg border-l-4 border-red-500 flex justify-between items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div>
                   <p className="text-xs text-slate-400 uppercase">Mission Route</p>
-                  <h3 className="text-xl font-bold text-white items-center gap-2">
-                    <span>{RACES[origin].flag}</span>
-                    <span>{data.route.from}</span>
-                    <span className="text-slate-500 mx-2 text-sm">✈</span>
-                    <span>{RACES[dest].flag}</span>
-                    <span>{data.route.to}</span>
-                  </h3>
+                  {/* ORIGIN FLAG IMAGE */}
+                    <div className="flex items-center gap-2">
+                        {/* Force width/height and use w40 URL */}
+                        <img 
+                            src={`https://flagcdn.com/w40/${RACES[origin].iso}.png`}
+                            srcSet={`https://flagcdn.com/w80/${RACES[origin].iso}.png 2x`} 
+                            width="30"
+                            alt={RACES[origin].name}
+                            className="rounded shadow-sm border border-slate-600"
+                        />
+                        <span>{data.route.from}</span>
+                    </div>
+                    
+                    <span className="text-slate-500 text-sm">✈</span>
+                    
+                    {/* DESTINATION FLAG IMAGE */}
+                    <div className="flex items-center gap-2">
+                        <img 
+                            src={`https://flagcdn.com/w40/${RACES[dest].iso}.png`} 
+                            srcSet={`https://flagcdn.com/w80/${RACES[dest].iso}.png 2x`}
+                            width="30"
+                            alt={RACES[dest].name}
+                            className="rounded shadow-sm border border-slate-600"
+                        />
+                        <span>{data.route.to}</span>
+                    </div>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-slate-400 uppercase">Airports</p>
