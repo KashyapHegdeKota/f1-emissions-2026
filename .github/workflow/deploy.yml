@@ -1,0 +1,40 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # This solves the Windows/Linux dependency issue automatically!
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install Dependencies
+      run: |
+        mkdir package
+        # GitHub runs on Linux, so we don't need special flags!
+        pip install -r requirements.txt --target ./package
+        cp main.py ./package/
+
+    - name: Zip Bundle
+      run: |
+        cd package
+        zip -r ../deploy.zip .
+
+    - name: Deploy to Lambda
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: us-east-1
+        function_name: PaddockJet-API  # Must match your Lambda name
+        zip_file: deploy.zip
